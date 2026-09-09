@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A contributor-friendly view of current project health and activity.">
+    <title>Project Pulse</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="dashboard">
+      <header class="dashboard-header">
+        <p class="dashboard-eyebrow">Team overview</p>
+        <h1>Project Pulse</h1>
+        <p class="dashboard-intro">
+          A quick read on what the team is building, who owns it, and where contributors
+          can make the biggest difference.
+        </p>
+      </header>
+
+      <main>
+        <section aria-labelledby="projects-heading">
+          <div class="projects-heading">
+            <h2 id="projects-heading">Current projects</h2>
+            <p id="project-count" aria-live="polite"></p>
+          </div>
+
+          <div id="loading-state" class="loading" role="status">
+            <p>Loading project updates…</p>
+          </div>
+          <div id="error-state" class="error-state" role="alert" hidden>
+            <p>Project updates could not be loaded. Please try again later.</p>
+          </div>
+          <div id="empty-state" class="empty-state" hidden>
+            <p>No projects available yet.</p>
+          </div>
+
+          <ul id="project-grid" class="project-grid" aria-label="Project updates"></ul>
+        </section>
+      </main>
+    </div>
+
+    <template id="project-card-template">
+      <li class="project-card">
+        <header class="card-header">
+          <div>
+            <h3 class="project-name"></h3>
+            <p class="project-owner">Owner: <strong class="owner-name"></strong></p>
+          </div>
+          <span class="status-badge" aria-label="Status"></span>
+        </header>
+
+        <dl class="project-meta">
+          <div>
+            <dt>Priority</dt>
+            <dd><span class="priority-badge"></span></dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd class="status-text"></dd>
+          </div>
+        </dl>
+
+        <p class="recent-activity">
+          <strong>Recent activity</strong>
+          <span class="activity-text"></span>
+        </p>
+      </li>
+    </template>
+
+    <script>
+      (() => {
+        const dataUrl = "project-data.json";
+        const grid = document.querySelector("#project-grid");
+        const template = document.querySelector("#project-card-template");
+        const loadingState = document.querySelector("#loading-state");
+        const errorState = document.querySelector("#error-state");
+        const emptyState = document.querySelector("#empty-state");
+        const projectCount = document.querySelector("#project-count");
+        const requiredFields = ["name", "owner", "status", "recentActivity", "priority"];
+
+        const displayValue = (value) => {
+          if (typeof value === "string" && value.trim()) return value.trim();
+          if (typeof value === "number" || typeof value === "boolean") return String(value);
+          return "Not provided";
+        };
+
+        const normalizedValue = (value) =>
+          displayValue(value).toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
+        const showState = (state) => {
+          loadingState.hidden = state !== "loading";
+          errorState.hidden = state !== "error";
+          emptyState.hidden = state !== "empty";
+          grid.hidden = state !== "ready";
+        };
+
+        const createCard = (project) => {
+          const card = template.content.cloneNode(true);
+          const name = displayValue(project.name);
+          const owner = displayValue(project.owner);
+          const status = displayValue(project.status);
+          const activity = displayValue(project.recentActivity);
+          const priority = displayValue(project.priority);
+          const statusBadge = card.querySelector(".status-badge");
+          const priorityBadge = card.querySelector(".priority-badge");
+
+          card.querySelector(".project-name").textContent = name;
+          card.querySelector(".owner-name").textContent = owner;
+          card.querySelector(".status-text").textContent = status;
+          card.querySelector(".activity-text").textContent = activity;
+          statusBadge.textContent = status;
+          statusBadge.dataset.status = normalizedValue(project.status);
+          statusBadge.setAttribute("aria-label", `Status: ${status}`);
+          priorityBadge.textContent = priority;
+          priorityBadge.dataset.priority = normalizedValue(project.priority);
+          priorityBadge.setAttribute("aria-label", `Priority: ${priority}`);
+          return card;
+        };
+
+        const renderProjects = (projects) => {
+          grid.replaceChildren();
+          projects.forEach((project) => {
+            const record = project && typeof project === "object" ? project : {};
+            requiredFields.forEach((field) => {
+              if (!(field in record)) record[field] = null;
+            });
+            grid.append(createCard(record));
+          });
+          projectCount.textContent = `${projects.length} ${projects.length === 1 ? "project" : "projects"}`;
+          showState(projects.length ? "ready" : "empty");
+        };
+
+        fetch(dataUrl)
+          .then((response) => {
+            if (!response.ok) throw new Error(`Unable to load project data (${response.status})`);
+            return response.json();
+          })
+          .then((data) => {
+            if (!data || !Array.isArray(data.projects)) {
+              throw new Error("Project data does not contain a projects array");
+            }
+            renderProjects(data.projects);
+          })
+          .catch((error) => {
+            console.error(error);
+            projectCount.textContent = "";
+            showState("error");
+          });
+      })();
+    </script>
+  </body>
+</html>

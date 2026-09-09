@@ -1,0 +1,412 @@
+/*
+ * Project Pulse
+ * A small, dependency-free visual system for the semantic dashboard markup.
+ */
+
+:root {
+  color-scheme: light;
+  --page: #f4f7fb;
+  --surface: #ffffff;
+  --surface-muted: #eef3f8;
+  --ink: #172033;
+  --muted: #5d6b80;
+  --line: #d7e0eb;
+  --line-strong: #b7c6d8;
+  --brand: #2457c5;
+  --brand-dark: #173b8d;
+  --brand-soft: #e7efff;
+  --success: #146c43;
+  --success-soft: #e2f5eb;
+  --warning: #875500;
+  --warning-soft: #fff1d2;
+  --danger: #a12c2c;
+  --danger-soft: #fde8e8;
+  --neutral: #46566c;
+  --neutral-soft: #e9eef4;
+  --shadow-sm: 0 1px 2px rgb(23 32 51 / 8%);
+  --shadow-md: 0 10px 25px rgb(23 32 51 / 9%), 0 2px 5px rgb(23 32 51 / 6%);
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --content-width: 76rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 18rem;
+  background: var(--page);
+}
+
+body {
+  min-width: 18rem;
+  min-height: 100vh;
+  margin: 0;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 90% -10%, #dce8ff 0, transparent 30rem),
+    var(--page);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  font-size: 1rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+a {
+  font: inherit;
+}
+
+a {
+  color: var(--brand-dark);
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  color: var(--brand);
+}
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 3px solid #f0a800;
+  outline-offset: 3px;
+}
+
+/* Page shell and first-view hierarchy */
+.dashboard {
+  width: min(100% - 2rem, var(--content-width));
+  margin-inline: auto;
+  padding: clamp(2rem, 5vw, 4.5rem) 0 4rem;
+}
+
+.dashboard-header {
+  display: grid;
+  gap: 0.7rem;
+  max-width: 48rem;
+  margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+.dashboard-eyebrow {
+  margin: 0;
+  color: var(--brand);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.dashboard h1 {
+  max-width: 14ch;
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+}
+
+.dashboard-intro,
+.dashboard-header > p:last-child {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.5vw, 1.12rem);
+}
+
+.projects-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 1rem;
+}
+
+.projects-heading h2 {
+  margin: 0;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  letter-spacing: -0.02em;
+}
+
+/* The grid remains useful with one card and grows cleanly as data arrives. */
+.project-grid,
+.projects-grid,
+.project-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Card layout: title first, metadata next, activity last for fast scanning. */
+.project-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: clamp(1.15rem, 2vw, 1.5rem);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.project-card:hover {
+  border-color: var(--line-strong);
+  box-shadow: 0 14px 30px rgb(23 32 51 / 12%), 0 3px 7px rgb(23 32 51 / 7%);
+  transform: translateY(-2px);
+}
+
+.project-card h3,
+.project-name {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.25rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.project-card header,
+.project-card .card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.project-owner,
+.owner {
+  margin: 0.3rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.project-owner strong,
+.owner strong {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.project-meta,
+.project-details {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+}
+
+.project-meta > div,
+.project-details > div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.project-meta dt,
+.project-details dt,
+.field-label {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.project-meta dd,
+.project-details dd {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.96rem;
+}
+
+.recent-activity,
+.project-summary {
+  margin: 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+
+.recent-activity strong,
+.project-summary strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--ink);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Status and priority use text plus a tinted surface, never color alone. */
+.status-badge,
+.priority-badge,
+.status,
+.priority {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 1.8rem;
+  padding: 0.25rem 0.65rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.status-badge::before,
+.status::before {
+  width: 0.42rem;
+  height: 0.42rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: currentColor;
+  content: "";
+}
+
+.status-active,
+.status[data-status="active"],
+.status-badge[data-status="active"] {
+  color: var(--success);
+  background: var(--success-soft);
+  border-color: #b8e4cb;
+}
+
+.status-planning,
+.status[data-status="planning"],
+.status-badge[data-status="planning"] {
+  color: var(--brand-dark);
+  background: var(--brand-soft);
+  border-color: #c4d5fb;
+}
+
+.status-blocked,
+.status[data-status="blocked"],
+.status-badge[data-status="blocked"] {
+  color: var(--danger);
+  background: var(--danger-soft);
+  border-color: #f3c4c4;
+}
+
+.status-complete,
+.status[data-status="complete"],
+.status-badge[data-status="complete"] {
+  color: var(--neutral);
+  background: var(--neutral-soft);
+  border-color: #ced8e4;
+}
+
+.priority-high,
+.priority[data-priority="high"],
+.priority-badge[data-priority="high"] {
+  color: var(--danger);
+  background: var(--danger-soft);
+  border-color: #f3c4c4;
+}
+
+.priority-medium,
+.priority[data-priority="medium"],
+.priority-badge[data-priority="medium"] {
+  color: var(--warning);
+  background: var(--warning-soft);
+  border-color: #f0d293;
+}
+
+.priority-low,
+.priority[data-priority="low"],
+.priority-badge[data-priority="low"] {
+  color: var(--neutral);
+  background: var(--neutral-soft);
+  border-color: #ced8e4;
+}
+
+/* Fetch lifecycle states are deliberately calm and readable. */
+.loading,
+.empty-state,
+.error-state,
+[role="status"],
+[role="alert"] {
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--muted);
+  box-shadow: var(--shadow-sm);
+}
+
+.loading {
+  border-color: #c4d5fb;
+  background: var(--brand-soft);
+  color: var(--brand-dark);
+}
+
+.empty-state {
+  border-style: dashed;
+}
+
+.error-state,
+[role="alert"] {
+  border-color: #f3c4c4;
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.loading p,
+.empty-state p,
+.error-state p {
+  margin: 0;
+}
+
+/* Keep the layout comfortable on phones and prevent badge overflow. */
+@media (max-width: 38rem) {
+  .dashboard {
+    width: min(100% - 1.25rem, var(--content-width));
+    padding-top: 1.5rem;
+  }
+
+  .dashboard h1 {
+    font-size: 2.35rem;
+  }
+
+  .project-card header,
+  .project-card .card-header,
+  .projects-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 60rem) {
+  .project-grid,
+  .projects-grid,
+  .project-list {
+    gap: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .project-card:hover {
+    transform: none;
+  }
+}

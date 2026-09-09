@@ -1,0 +1,39 @@
+{
+  "projects": [
+    {
+      "name": "Contributor Onboarding",
+      "owner": "Mona",
+      "status": "active",
+      "recentActivity": "Refreshed the first-contribution guide and added a local setup checklist.",
+      "priority": "high"
+    },
+    {
+      "name": "Release Notes Hub",
+      "owner": "Jordan Lee",
+      "status": "planning",
+      "recentActivity": "Collected feedback from maintainers on the new release summary format.",
+      "priority": "medium"
+    },
+    {
+      "name": "Accessibility Sweep",
+      "owner": "Priya Shah",
+      "status": "active",
+      "recentActivity": "Resolved keyboard navigation issues in the project settings flow.",
+      "priority": "high"
+    },
+    {
+      "name": "Community Metrics",
+      "owner": "Alex Rivera",
+      "status": "blocked",
+      "recentActivity": "Waiting for the analytics export permissions needed to verify the dashboard.",
+      "priority": "medium"
+    },
+    {
+      "name": "Documentation Refresh",
+      "owner": "Sam Chen",
+      "status": "complete",
+      "recentActivity": "Published the updated contributor FAQ and archived outdated examples.",
+      "priority": "low"
+    }
+  ]
+}
